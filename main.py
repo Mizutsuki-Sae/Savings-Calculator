@@ -1,10 +1,3 @@
-# MIT License
-# 
-# Copyright (c) 2024 Mizutsuki-Sae
-# 
-# 이 파일은 MIT 라이센스를 따릅니다. 자세한 내용은 LICENSE 파일을 참조하세요.
-
-
 import tkinter as tk
 from tkinter import messagebox
 
@@ -67,6 +60,7 @@ def calculate():
         annual_rate_deposit = float(entry_annual_rate_deposit.get()) / 100  # 예금 통장 이자율
         months = int(entry_months.get())  # 저축 기간
         start_year = int(entry_start_year.get())  # 시작 연도를 입력받음
+        tax_rate = float(entry_tax_rate.get()) / 100  # 사용자 입력 세율
 
         # 복리 통장 계산
         total_compound = 0
@@ -93,8 +87,7 @@ def calculate():
         # 예금 통장 계산
         total_deposit, total_deposit_interest = deposit_interest(initial_amount, monthly_deposit, annual_rate_deposit, months)
 
-        # 세금 계산 (15.4%)
-        tax_rate = 0.154
+        # 세금 계산 (사용자가 입력한 세율 적용)
         compound_after_tax = total_compound - (total_compound_interest * tax_rate)
         savings_after_tax = total_savings - (total_savings_interest * tax_rate)
         deposit_after_tax = total_deposit - (total_deposit_interest * tax_rate)
@@ -173,6 +166,11 @@ label_annual_rate_deposit.grid(row=5, column=0, sticky="w", padx=5, pady=10)
 entry_annual_rate_deposit = tk.Entry(frame, font=("Arial", 12))
 entry_annual_rate_deposit.grid(row=5, column=1, padx=10, pady=10)
 
+label_tax_rate = tk.Label(frame, text="세금 (%):", font=("Arial", 12), bg="#f9f9f9", fg="#333")
+label_tax_rate.grid(row=8, column=0, sticky="w", padx=5, pady=10)
+entry_tax_rate = tk.Entry(frame, font=("Arial", 12))
+entry_tax_rate.grid(row=8, column=1, padx=10, pady=10)
+
 label_months = tk.Label(frame, text="저축 기간 (개월):", font=("Arial", 12), bg="#f9f9f9", fg="#333")
 label_months.grid(row=6, column=0, sticky="w", padx=5, pady=10)
 entry_months = tk.Entry(frame, font=("Arial", 12))
@@ -185,7 +183,7 @@ entry_start_year.grid(row=7, column=1, padx=10, pady=10)
 
 # 계산 버튼 스타일
 button_calculate = tk.Button(frame, text="계산", font=("Arial", 12, "bold"), bg="#4CAF50", fg="white", relief="raised", command=calculate)
-button_calculate.grid(row=8, column=0, columnspan=2, pady=20)
+button_calculate.grid(row=9, column=0, columnspan=2, pady=20)
 
 # 결과 출력 프레임
 result_frame = tk.Frame(root, bg="#f9f9f9")
