@@ -1,5 +1,29 @@
+# MIT License
+
+# Copyright (c) 2024 Mizutsuki-Sae
+
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+
 import tkinter as tk
 from tkinter import messagebox
+import webbrowser
 
 # 윤년 판별 함수
 def is_leap_year(year):
@@ -128,6 +152,17 @@ def update_result_boxes(compound_before, savings_before, deposit_before, compoun
 # GUI 설정
 root = tk.Tk()
 root.title("저축 통장 계산기")
+
+# 저작권 문구 추가
+copyright_label = tk.Label(root, text="Copyright (c) 2024 Mizutsuki-Sae", font=("Arial", 10), fg="#777", bg="#f9f9f9", cursor="hand2")
+copyright_label.pack(side="bottom", pady=10)
+
+# 클릭 이벤트 처리
+copyright_label.bind("<Button-1>", lambda e: open_github())  # GitHub 링크로 이동
+
+# GitHub 링크를 열기 위한 함수
+def open_github():
+    webbrowser.open("https://github.com/Mizutsuki-Sae/Savings-Calculator")
 
 # 전체 배경 색상 설정
 root.config(bg="#f9f9f9")
