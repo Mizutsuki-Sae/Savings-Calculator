@@ -167,19 +167,19 @@ entry_annual_rate_deposit = tk.Entry(frame, font=("Arial", 12))
 entry_annual_rate_deposit.grid(row=5, column=1, padx=10, pady=10)
 
 label_tax_rate = tk.Label(frame, text="세금 (%):", font=("Arial", 12), bg="#f9f9f9", fg="#333")
-label_tax_rate.grid(row=8, column=0, sticky="w", padx=5, pady=10)
+label_tax_rate.grid(row=6, column=0, sticky="w", padx=5, pady=10)
 entry_tax_rate = tk.Entry(frame, font=("Arial", 12))
-entry_tax_rate.grid(row=8, column=1, padx=10, pady=10)
+entry_tax_rate.grid(row=6, column=1, padx=10, pady=10)
 
 label_months = tk.Label(frame, text="저축 기간 (개월):", font=("Arial", 12), bg="#f9f9f9", fg="#333")
-label_months.grid(row=6, column=0, sticky="w", padx=5, pady=10)
+label_months.grid(row=7, column=0, sticky="w", padx=5, pady=10)
 entry_months = tk.Entry(frame, font=("Arial", 12))
-entry_months.grid(row=6, column=1, padx=10, pady=10)
+entry_months.grid(row=7, column=1, padx=10, pady=10)
 
 label_start_year = tk.Label(frame, text="시작 연도:", font=("Arial", 12), bg="#f9f9f9", fg="#333")
-label_start_year.grid(row=7, column=0, sticky="w", padx=5, pady=10)
+label_start_year.grid(row=8, column=0, sticky="w", padx=5, pady=10)
 entry_start_year = tk.Entry(frame, font=("Arial", 12))
-entry_start_year.grid(row=7, column=1, padx=10, pady=10)
+entry_start_year.grid(row=8, column=1, padx=10, pady=10)
 
 # 계산 버튼 스타일
 button_calculate = tk.Button(frame, text="계산", font=("Arial", 12, "bold"), bg="#4CAF50", fg="white", relief="raised", command=calculate)
