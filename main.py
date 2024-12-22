@@ -1,6 +1,6 @@
 # MIT License
 # 
-# Copyright (c) [2024] [Mizutsuki-Sae]
+# Copyright (c) 2024 Mizutsuki-Sae
 # 
 # 이 파일은 MIT 라이센스를 따릅니다. 자세한 내용은 LICENSE 파일을 참조하세요.
 
