@@ -32,27 +32,40 @@ def is_leap_year(year):
     return False
 
 # 복리 통장 계산 함수 (매일 복리)
-def compound_interest(principal, annual_rate, months, start_year):
+def compound_interest_daily(principal, annual_rate, months, start_year):
     daily_rate = annual_rate / 365  # 일일 이자율
-    total_amount = principal  # 처음 원금은 그대로 시작
+    total_amount = principal
     total_days = 0
-    
+
     # 월별 일수 (각각의 월에 대해 실제 일수를 계산)
     month_days = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]  # 기본 월별 일수 (2월은 나중에 윤년 고려)
     
-    # 윤년인 경우 2월을 29일로 수정
     if is_leap_year(start_year):
         month_days[1] = 29  # 2월을 29일로 설정
     
-    # 주어진 기간 동안 각 월의 일수를 합산
     for month in range(months):
-        # 월별 일수를 더함
         total_days += month_days[month % 12]  # 월을 12로 나눈 나머지로 반복하여 일수 합산
     
-    # 매일 복리 계산
     for day in range(total_days):
         total_amount += total_amount * daily_rate  # 매일 복리 적용
     
+    return total_amount
+
+# 복리 통장 계산 함수 (월 복리)
+def compound_interest_monthly(principal, annual_rate, months):
+    monthly_rate = annual_rate / 12  # 월 이자율
+    total_amount = principal
+    for month in range(months):
+        total_amount += total_amount * monthly_rate  # 월 복리 적용
+    return total_amount
+
+# 복리 통장 계산 함수 (연 복리)
+def compound_interest_yearly(principal, annual_rate, months):
+    yearly_rate = annual_rate  # 연 이자율
+    total_amount = principal
+    total_years = months / 12
+    for _ in range(int(total_years)):
+        total_amount += total_amount * yearly_rate  # 연 복리 적용
     return total_amount
 
 # 적금 통장 계산 함수 (단리 이자)
@@ -69,7 +82,6 @@ def deposit_interest(principal, annual_rate, months):
     total_amount = principal + total_interest  # 총 금액 = 원금 + 이자
     return total_amount, total_interest
 
-
 # 계산 함수
 def calculate():
     try:
@@ -84,14 +96,32 @@ def calculate():
         start_year = int(entry_start_year.get())  # 시작 연도를 입력받음
         tax_rate = float(entry_tax_rate.get()) / 100  # 사용자 입력 세율
 
+        # 복리 형식에 따른 함수 선택
+        compound_format = compound_format_var.get()
+        if compound_format == "매일 복리":
+            compound_interest_function = compound_interest_daily
+        elif compound_format == "월 복리":
+            compound_interest_function = compound_interest_monthly
+        elif compound_format == "연 복리":
+            compound_interest_function = compound_interest_yearly
+
         # 복리 통장 계산
         total_compound = 0
         total_compound_interest = 0  # 복리 통장 이자 합계
         for i in range(months):
-            if i == 0:
-                amount = compound_interest(account_initial_amount + monthly_deposit, annual_rate_compound, months - i, start_year)
+            if compound_format == "매일 복리":
+                # 매일 복리일 경우 start_year를 넘겨야 함
+                if i == 0:
+                    amount = compound_interest_function(account_initial_amount + monthly_deposit, annual_rate_compound, months - i, start_year)
+                else:
+                    amount = compound_interest_function(monthly_deposit, annual_rate_compound, months - i, start_year)
             else:
-                amount = compound_interest(monthly_deposit, annual_rate_compound, months - i, start_year)
+                # 월 복리나 연 복리일 경우 start_year를 넘길 필요 없음
+                if i == 0:
+                    amount = compound_interest_function(account_initial_amount + monthly_deposit, annual_rate_compound, months - i)
+                else:
+                    amount = compound_interest_function(monthly_deposit, annual_rate_compound, months - i)
+            
             total_compound += amount
             total_compound_interest += amount - (monthly_deposit if i > 0 else account_initial_amount + monthly_deposit)  # 이자 부분만 합산
 
@@ -185,45 +215,62 @@ label_account_initial_amount.grid(row=2, column=0, sticky="w", padx=5, pady=10)
 entry_account_initial_amount = tk.Entry(frame, font=("Arial", 12))
 entry_account_initial_amount.grid(row=2, column=1, padx=10, pady=10)
 
-
+# '매달 저축할 금액 (원):' 필드와 복리 형식 선택 드롭다운 사이에 복리 형식 선택 메뉴 추가
 label_monthly_deposit = tk.Label(frame, text="매달 저축할 금액 (원):", font=("Arial", 12), bg="#f9f9f9", fg="#333")
 label_monthly_deposit.grid(row=3, column=0, sticky="w", padx=5, pady=10)
 entry_monthly_deposit = tk.Entry(frame, font=("Arial", 12))
 entry_monthly_deposit.grid(row=3, column=1, padx=10, pady=10)
 
+# 복리 형식 선택 드롭다운 메뉴
+label_compound_format = tk.Label(frame, text="복리 형식 선택:", font=("Arial", 12), bg="#f9f9f9", fg="#333")
+label_compound_format.grid(row=4, column=0, sticky="w", padx=5, pady=10)
+
+# 드롭다운 메뉴에 사용할 옵션들
+compound_formats = ["매일 복리", "월 복리", "연 복리"]
+
+# 드롭다운 메뉴 (스타일 수정)
+compound_format_var = tk.StringVar()
+compound_format_var.set(compound_formats[0])  # 기본값은 "일일 복리"
+
+compound_format_menu = tk.OptionMenu(frame, compound_format_var, *compound_formats)
+compound_format_menu.config(font=("Arial", 12), bg="#fff", fg="#333", relief="raised", width=15)
+compound_format_menu.grid(row=4, column=1, padx=10, pady=10)
+
+
+# '복리 통장 연 이자율 (%):' 필드
 label_annual_rate_compound = tk.Label(frame, text="복리 통장 연 이자율 (%):", font=("Arial", 12), bg="#f9f9f9", fg="#333")
-label_annual_rate_compound.grid(row=4, column=0, sticky="w", padx=5, pady=10)
+label_annual_rate_compound.grid(row=5, column=0, sticky="w", padx=5, pady=10)
 entry_annual_rate_compound = tk.Entry(frame, font=("Arial", 12))
-entry_annual_rate_compound.grid(row=4, column=1, padx=10, pady=10)
+entry_annual_rate_compound.grid(row=5, column=1, padx=10, pady=10)
 
 label_annual_rate_savings = tk.Label(frame, text="적금 통장 연 이자율 (%):", font=("Arial", 12), bg="#f9f9f9", fg="#333")
-label_annual_rate_savings.grid(row=5, column=0, sticky="w", padx=5, pady=10)
+label_annual_rate_savings.grid(row=6, column=0, sticky="w", padx=5, pady=10)
 entry_annual_rate_savings = tk.Entry(frame, font=("Arial", 12))
-entry_annual_rate_savings.grid(row=5, column=1, padx=10, pady=10)
+entry_annual_rate_savings.grid(row=6, column=1, padx=10, pady=10)
 
 label_annual_rate_deposit = tk.Label(frame, text="예금 통장 연 이자율 (%):", font=("Arial", 12), bg="#f9f9f9", fg="#333")
-label_annual_rate_deposit.grid(row=6, column=0, sticky="w", padx=5, pady=10)
+label_annual_rate_deposit.grid(row=7, column=0, sticky="w", padx=5, pady=10)
 entry_annual_rate_deposit = tk.Entry(frame, font=("Arial", 12))
-entry_annual_rate_deposit.grid(row=6, column=1, padx=10, pady=10)
+entry_annual_rate_deposit.grid(row=7, column=1, padx=10, pady=10)
 
 label_tax_rate = tk.Label(frame, text="세금 (%):", font=("Arial", 12), bg="#f9f9f9", fg="#333")
-label_tax_rate.grid(row=7, column=0, sticky="w", padx=5, pady=10)
+label_tax_rate.grid(row=8, column=0, sticky="w", padx=5, pady=10)
 entry_tax_rate = tk.Entry(frame, font=("Arial", 12))
-entry_tax_rate.grid(row=7, column=1, padx=10, pady=10)
+entry_tax_rate.grid(row=8, column=1, padx=10, pady=10)
 
 label_months = tk.Label(frame, text="저축 기간 (개월):", font=("Arial", 12), bg="#f9f9f9", fg="#333")
-label_months.grid(row=8, column=0, sticky="w", padx=5, pady=10)
+label_months.grid(row=9, column=0, sticky="w", padx=5, pady=10)
 entry_months = tk.Entry(frame, font=("Arial", 12))
-entry_months.grid(row=8, column=1, padx=10, pady=10)
+entry_months.grid(row=9, column=1, padx=10, pady=10)
 
 label_start_year = tk.Label(frame, text="시작 연도:", font=("Arial", 12), bg="#f9f9f9", fg="#333")
-label_start_year.grid(row=9, column=0, sticky="w", padx=5, pady=10)
+label_start_year.grid(row=10, column=0, sticky="w", padx=5, pady=10)
 entry_start_year = tk.Entry(frame, font=("Arial", 12))
-entry_start_year.grid(row=9, column=1, padx=10, pady=10)
+entry_start_year.grid(row=10, column=1, padx=10, pady=10)
 
 # 계산 버튼 스타일
 button_calculate = tk.Button(frame, text="계산", font=("Arial", 12, "bold"), bg="#4CAF50", fg="white", relief="raised", command=calculate)
-button_calculate.grid(row=10, column=0, columnspan=2, pady=20)
+button_calculate.grid(row=11, column=0, columnspan=2, pady=20)
 
 # 결과 출력 프레임
 result_frame = tk.Frame(root, bg="#f9f9f9")
