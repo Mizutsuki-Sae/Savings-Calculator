@@ -278,11 +278,11 @@ entry_monthly_deposit.grid(row=3, column=1, padx=10, pady=10)
 # '복리 통장', '적금 통장', '예금 통장'에 매달 저축할 금액을 넣을지 여부를 선택하는 체크박스들
 var_savings_account = tk.BooleanVar()
 checkbox_savings = tk.Checkbutton(frame, text="적금 통장에 넣기", variable=var_savings_account, font=("Arial", 12), bg="#f9f9f9", fg="#333")
-checkbox_savings.grid(row=4, column=1, sticky="w", padx=5, pady=5)
+checkbox_savings.grid(row=4, column=0, sticky="w", padx=5, pady=5)
 
 var_compound_account = tk.BooleanVar()
 checkbox_compound = tk.Checkbutton(frame, text="복리 통장에 넣기", variable=var_compound_account, font=("Arial", 12), bg="#f9f9f9", fg="#333")
-checkbox_compound.grid(row=4, column=0, sticky="w", padx=5, pady=5)
+checkbox_compound.grid(row=4, column=1, sticky="w", padx=5, pady=5)
 
 # 복리 형식 선택 드롭다운 메뉴
 label_compound_format = tk.Label(frame, text="복리 형식 선택:", font=("Arial", 12), bg="#f9f9f9", fg="#333")
